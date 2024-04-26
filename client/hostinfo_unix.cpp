@@ -1235,6 +1235,49 @@ int HOST_INFO::get_virtualbox_version() {
     return 0;
 }
 
+bool HOST_INFO::is_docker_available() {
+    char docker_location[MAXPATHLEN];
+    const char* docker_locations[10];
+    std::size_t paths_count = 0;
+    const char** paths;
+    char cmd [MAXPATHLEN+35];
+    char buf[256];
+    FILE* fd;
+    fd = popen("which -a docker 2>&1", "r");
+
+    if (fd){
+        while (fgets(buf, sizeof(buf), fd)) {
+            strip_whitespace(buf);
+            if (access(buf, 1) != 0) continue;
+            safe_strcpy(docker_location, buf);
+            docker_locations[paths_count] = docker_location;
+            ++paths_count;
+        }
+    }
+
+    pclose(fd);
+    if (paths_count == 0) return false;
+    docker_locations[paths_count] = NULL;
+
+    for (paths = docker_locations; *paths != NULL; ++paths) {
+        const char* path = *paths;
+        safe_strcpy(cmd, path);
+        safe_strcat(cmd, " run --rm hello-world 2>&1");
+        fd = popen(cmd, "r");
+        if (fd) {
+            while (fgets(buf, sizeof(buf), fd)) {
+                if (strstr(buf, "Hello from Docker!")){
+                    pclose(fd);
+                    return true;
+                }
+            }
+        }
+        pclose(fd);
+    }
+
+    return false;
+}
+
 // get p_vendor, p_model, p_features
 //
 int HOST_INFO::get_cpu_info() {
@@ -1680,6 +1723,10 @@ int HOST_INFO::get_host_info(bool init) {
 
     if (!cc_config.dont_use_vbox) {
         get_virtualbox_version();
+    }
+
+    if(!cc_config.dont_use_docker){
+        docker_use = is_docker_available();
     }
 
     get_cpu_info();

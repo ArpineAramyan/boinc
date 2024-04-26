@@ -374,6 +374,7 @@ struct HOST {
     OPENCL_CPU_PROP opencl_cpu_prop[MAX_OPENCL_CPU_PLATFORMS];
     bool wsl_available;
     WSLS wsls;
+    bool docker_use;
 
     // stuff from time_stats
     double cpu_and_network_available_frac;

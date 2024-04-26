@@ -198,6 +198,9 @@ void CC_CONFIG::show() {
     if (dont_use_wsl) {
         msg_printf(NULL, MSG_INFO, "Config: don't use the Windows Subsystem for Linux");
     }
+    if (dont_use_docker) {
+        msg_printf(NULL, MSG_INFO, "Config: don't use Docker");
+    }
     for (i=0; i<alt_platforms.size(); i++) {
         msg_printf(NULL, MSG_INFO,
             "Config: alternate platform: %s", alt_platforms[i].c_str()

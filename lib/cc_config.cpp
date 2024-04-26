@@ -215,6 +215,7 @@ void CC_CONFIG::defaults() {
     dont_suspend_nci = false;
     dont_use_vbox = false;
     dont_use_wsl = false;
+    dont_use_docker = false;
     exclude_gpus.clear();
     exclusive_apps.clear();
     exclusive_gpu_apps.clear();
@@ -560,13 +561,15 @@ int CC_CONFIG::write(MIOFILE& out, LOG_FLAGS& log_flags) {
         "        <dont_suspend_nci>%d</dont_suspend_nci>\n"
         "        <dont_use_vbox>%d</dont_use_vbox>\n"
         "        <dont_use_wsl>%d</dont_use_wsl>\n",
+        "        <dont_use_docker>%d</dont_use_docker>\n",
         disallow_attach,
         dont_check_file_sizes,
         dont_contact_ref_site,
         lower_client_priority,
         dont_suspend_nci,
         dont_use_vbox,
-        dont_use_wsl
+        dont_use_wsl,
+        dont_use_docker
     );
 
     for (i=0; i<exclude_gpus.size(); i++) {

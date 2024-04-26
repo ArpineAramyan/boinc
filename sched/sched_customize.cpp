@@ -869,6 +869,22 @@ static inline bool app_plan_opencl(
     }
 }
 
+static inline bool app_plan_docker(
+    SCHEDULER_REQUEST& sreq
+){
+     if (sreq.core_client_major_version < 8) {
+        add_no_work_message("BOINC client 8.0+ required for Docker jobs");
+        return false;
+    }
+
+     if (!(sreq.host.docker_use)) {
+            add_no_work_message("Docker is not available");
+            return false;
+        }
+     return true;
+
+}
+
 // handles vbox[32|64][_[mt]|[hwaccel]]
 // "mt" is tailored to the needs of CERN:
 // use 1 or 2 CPUs
@@ -1017,6 +1033,8 @@ bool app_plan(SCHEDULER_REQUEST& sreq, char* plan_class, HOST_USAGE& hu, const W
         return app_plan_nci(sreq, hu);
     } else if (!strcmp(plan_class, "sse3")) {
         return app_plan_sse3(sreq, hu);
+    } else if (strstr(plan_class, "docker")) {
+        return app_plan_docker(sreq);
     } else if (strstr(plan_class, "vbox")) {
         return app_plan_vbox(sreq, plan_class, hu);
     }
