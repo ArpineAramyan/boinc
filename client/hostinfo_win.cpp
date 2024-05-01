@@ -1590,6 +1590,46 @@ int HOST_INFO::get_virtualbox_version() {
     return 0;
 }
 
+bool HOST_INFO::is_docker_available(){
+    const char* docker_locations[10];
+    std::size_t path_count = 0;
+    char cmd[300];
+    const char** paths;
+    FILE* fd;
+    fd = _popen("wsl which -a docker 2>&1", "r");
+    char buf[256];
+
+    if (fd) {
+        while (fgets(buf, sizeof(buf), fd)) {
+            std::cout << buf << std::endl;
+            strip_whitespace(buf);
+            docker_locations[path_count] = buf;
+            ++path_count;
+        }
+    }
+
+    _pclose(fd);
+    docker_locations[path_count] = NULL;
+
+    for (paths = docker_locations; *paths != NULL; ++paths) {
+        const char* path = *paths;
+        safe_strcpy(cmd, "wsl ");
+        safe_strcat(cmd, path);
+        safe_strcat(cmd, " run --rm hello-world 2>&1");
+        fd = _popen(cmd, "r");
+        if (fd) {
+            while (fgets(buf, sizeof(buf), fd)) {
+                if (strstr(buf, "Hello from Docker!")) {
+                    _pclose(fd);
+                    return true;
+                }
+            }
+        }
+        _pclose(fd);
+    }
+    return false;
+}
+
 // get info about processor groups
 //
 static void show_proc_info(SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX &pi) {
@@ -1663,6 +1703,19 @@ int HOST_INFO::get_host_info(bool init) {
         OSVERSIONINFOEX osvi;
         if (get_OSVERSIONINFO(osvi) && osvi.dwMajorVersion >= 10) {
             get_wsl_information(wsl_available, wsls);
+        }
+    }
+
+    if ((!cc_config.dont_use_docker) && (!cc_config.dont_use_wsl)){
+        if (wsl_available){
+            for (std::size_t i = 0; i < wsls.wsls.size(); ++i){
+                const WSL& wsl = wsls.wsls[i];
+                if (wsl.is_default){
+                    if (wsl.version.find("WSL2") != std::string::npos){
+                        get_docker_info(docker_use);
+                    }
+                }
+            }
         }
     }
 #endif
