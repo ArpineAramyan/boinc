@@ -116,13 +116,13 @@ static int android_version_num(HOST h) {
 }
 
 static bool wu_is_infeasible_for_plan_class(
-    const PLAN_CLASS_SPEC* pc, const WORKUNIT* wu
+        const PLAN_CLASS_SPEC* pc, const WORKUNIT* wu
 ) {
     if (pc->min_wu_id && wu->id < pc->min_wu_id) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] WU#%ld too old for plan class '%s' (%ld)\n",
-                wu->id, pc->name, pc->min_wu_id
+                                "[version] WU#%ld too old for plan class '%s' (%ld)\n",
+                                wu->id, pc->name, pc->min_wu_id
             );
         }
         return true;
@@ -130,8 +130,8 @@ static bool wu_is_infeasible_for_plan_class(
     if (pc->max_wu_id && wu->id > pc->max_wu_id) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] WU#%ld too new for plan class '%s' (%ld)\n",
-                wu->id, pc->name, pc->max_wu_id
+                                "[version] WU#%ld too new for plan class '%s' (%ld)\n",
+                                wu->id, pc->name, pc->max_wu_id
             );
         }
         return true;
@@ -139,8 +139,8 @@ static bool wu_is_infeasible_for_plan_class(
     if (pc->min_batch && wu->batch < pc->min_batch) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] batch#%d too old for plan class '%s' (%ld)\n",
-                wu->batch, pc->name, pc->min_batch
+                                "[version] batch#%d too old for plan class '%s' (%ld)\n",
+                                wu->batch, pc->name, pc->min_batch
             );
         }
         return true;
@@ -148,8 +148,8 @@ static bool wu_is_infeasible_for_plan_class(
     if (pc->max_batch && wu->batch > pc->max_batch) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] batch#%d too new for plan class '%s' (%ld)\n",
-                wu->batch, pc->name, pc->max_batch
+                                "[version] batch#%d too new for plan class '%s' (%ld)\n",
+                                wu->batch, pc->name, pc->max_batch
             );
         }
         return true;
@@ -168,11 +168,11 @@ int PLAN_CLASS_SPECS::parse_file(const char* path) {
 bool PLAN_CLASS_SPEC::opencl_check(OPENCL_DEVICE_PROP& opencl_prop) {
     if (min_opencl_version && opencl_prop.opencl_device_version_int
         && min_opencl_version > opencl_prop.opencl_device_version_int
-    ) {
+            ) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] OpenCL device version required min: %d, supplied: %d\n",
-                min_opencl_version, opencl_prop.opencl_device_version_int
+                                "[version] OpenCL device version required min: %d, supplied: %d\n",
+                                min_opencl_version, opencl_prop.opencl_device_version_int
             );
         }
         return false;
@@ -180,11 +180,11 @@ bool PLAN_CLASS_SPEC::opencl_check(OPENCL_DEVICE_PROP& opencl_prop) {
 
     if (max_opencl_version && opencl_prop.opencl_device_version_int
         && max_opencl_version < opencl_prop.opencl_device_version_int
-    ) {
+            ) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] OpenCL device version required max: %d, supplied: %d\n",
-                max_opencl_version, opencl_prop.opencl_device_version_int
+                                "[version] OpenCL device version required max: %d, supplied: %d\n",
+                                max_opencl_version, opencl_prop.opencl_device_version_int
             );
         }
         return false;
@@ -192,11 +192,11 @@ bool PLAN_CLASS_SPEC::opencl_check(OPENCL_DEVICE_PROP& opencl_prop) {
 
     if (min_opencl_driver_revision && opencl_prop.opencl_device_version_int
         && min_opencl_driver_revision > opencl_prop.opencl_driver_revision
-    ) {
+            ) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] OpenCL driver revision required min: %d, supplied: %d\n",
-                min_opencl_driver_revision, opencl_prop.opencl_driver_revision
+                                "[version] OpenCL driver revision required min: %d, supplied: %d\n",
+                                min_opencl_driver_revision, opencl_prop.opencl_driver_revision
             );
         }
         return false;
@@ -204,11 +204,11 @@ bool PLAN_CLASS_SPEC::opencl_check(OPENCL_DEVICE_PROP& opencl_prop) {
 
     if (max_opencl_driver_revision && opencl_prop.opencl_device_version_int
         && max_opencl_driver_revision < opencl_prop.opencl_driver_revision
-    ) {
+            ) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] OpenCL driver revision required max: %d, supplied: %d\n",
-                max_opencl_driver_revision, opencl_prop.opencl_driver_revision
+                                "[version] OpenCL driver revision required max: %d, supplied: %d\n",
+                                max_opencl_driver_revision, opencl_prop.opencl_driver_revision
             );
         }
         return false;
@@ -217,7 +217,7 @@ bool PLAN_CLASS_SPEC::opencl_check(OPENCL_DEVICE_PROP& opencl_prop) {
     if (double_precision_fp && (opencl_prop.double_fp_config == 0)) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] device (or driver) doesn't support double precision fp math\n"
+                                "[version] device (or driver) doesn't support double precision fp math\n"
             );
         }
         return false;
@@ -230,7 +230,7 @@ bool PLAN_CLASS_SPEC::opencl_check(OPENCL_DEVICE_PROP& opencl_prop) {
 // If so return the resource usage and estimated FLOPS in hu.
 //
 bool PLAN_CLASS_SPEC::check(
-    SCHEDULER_REQUEST& sreq, HOST_USAGE& hu, const WORKUNIT* wu
+        SCHEDULER_REQUEST& sreq, HOST_USAGE& hu, const WORKUNIT* wu
 ) {
     COPROC* cpp = NULL;
     bool can_use_multicore = true;
@@ -242,8 +242,8 @@ bool PLAN_CLASS_SPEC::check(
     if (user_id && sreq.user_id != user_id) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] not specified user ID (%d %d)\n",
-                user_id, sreq.user_id
+                                "[version] not specified user ID (%d %d)\n",
+                                user_id, sreq.user_id
             );
         }
         return false;
@@ -288,8 +288,8 @@ bool PLAN_CLASS_SPEC::check(
             if (!strstr(buf, cpu_features[i].c_str())) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: CPU lacks feature '%s' (got '%s')\n",
-                        cpu_features[i].c_str(), sreq.host.p_features
+                                        "[version] plan_class_spec: CPU lacks feature '%s' (got '%s')\n",
+                                        cpu_features[i].c_str(), sreq.host.p_features
                     );
                 }
                 return false;
@@ -302,8 +302,8 @@ bool PLAN_CLASS_SPEC::check(
     if (min_ncpus && g_wreq->effective_ncpus < min_ncpus) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: not enough CPUs: %d < %f\n",
-                g_wreq->effective_ncpus, min_ncpus
+                                "[version] plan_class_spec: not enough CPUs: %d < %f\n",
+                                g_wreq->effective_ncpus, min_ncpus
             );
         }
         return false;
@@ -313,11 +313,11 @@ bool PLAN_CLASS_SPEC::check(
     //
     if (have_host_summary_regex
         && regexec(&(host_summary_regex), g_reply->host.serialnum, 0, NULL, 0)
-    ) {
+            ) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: host summary '%s' didn't match regexp\n",
-                g_reply->host.serialnum
+                                "[version] plan_class_spec: host summary '%s' didn't match regexp\n",
+                                g_reply->host.serialnum
             );
         }
         return false;
@@ -328,8 +328,8 @@ bool PLAN_CLASS_SPEC::check(
     if (have_os_regex && regexec(&(os_regex), sreq.host.os_version, 0, NULL, 0)) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: OS version '%s' didn't match regexp\n",
-                sreq.host.os_version
+                                "[version] plan_class_spec: OS version '%s' didn't match regexp\n",
+                                sreq.host.os_version
             );
         }
         return false;
@@ -339,8 +339,8 @@ bool PLAN_CLASS_SPEC::check(
         if (!host_os_version_num) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: Can't determine numerical OS version '%s'\n",
-                    sreq.host.os_version
+                                    "[version] plan_class_spec: Can't determine numerical OS version '%s'\n",
+                                    sreq.host.os_version
                 );
             }
             return false;
@@ -348,8 +348,8 @@ bool PLAN_CLASS_SPEC::check(
         if (min_os_version && (host_os_version_num < min_os_version)) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: OS version '%s' too low (%.0f / %.0f)\n",
-                    sreq.host.os_version, host_os_version_num, min_os_version
+                                    "[version] plan_class_spec: OS version '%s' too low (%.0f / %.0f)\n",
+                                    sreq.host.os_version, host_os_version_num, min_os_version
                 );
             }
             return false;
@@ -357,8 +357,8 @@ bool PLAN_CLASS_SPEC::check(
         if (max_os_version && (host_os_version_num > max_os_version)) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: OS version '%s' too high (%.0f / %.0f)\n",
-                    sreq.host.os_version, host_os_version_num, max_os_version
+                                    "[version] plan_class_spec: OS version '%s' too high (%.0f / %.0f)\n",
+                                    sreq.host.os_version, host_os_version_num, max_os_version
                 );
             }
             return false;
@@ -370,8 +370,8 @@ bool PLAN_CLASS_SPEC::check(
         if (!host_android_version) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: Can't determine numerical Android version '%s'\n",
-                    sreq.host.os_version
+                                    "[version] plan_class_spec: Can't determine numerical Android version '%s'\n",
+                                    sreq.host.os_version
                 );
             }
             if (min_android_version>0) return false;
@@ -379,8 +379,8 @@ bool PLAN_CLASS_SPEC::check(
         if (min_android_version && (host_android_version < min_android_version)) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: Android version '%s' too low (%d / %d)\n",
-                    sreq.host.os_version, host_android_version, min_android_version
+                                    "[version] plan_class_spec: Android version '%s' too low (%d / %d)\n",
+                                    sreq.host.os_version, host_android_version, min_android_version
                 );
             }
             return false;
@@ -388,8 +388,8 @@ bool PLAN_CLASS_SPEC::check(
         if (max_android_version && (host_android_version > max_android_version)) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: Android version '%s' too high (%d / %d)\n",
-                    sreq.host.os_version, host_android_version, max_android_version
+                                    "[version] plan_class_spec: Android version '%s' too high (%d / %d)\n",
+                                    sreq.host.os_version, host_android_version, max_android_version
                 );
             }
             return false;
@@ -403,8 +403,8 @@ bool PLAN_CLASS_SPEC::check(
         if (v < min_libc_version) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: libc version too low (%d < %d)\n",
-                    v, min_libc_version
+                                    "[version] plan_class_spec: libc version too low (%d < %d)\n",
+                                    v, min_libc_version
                 );
             }
             return false;
@@ -416,8 +416,8 @@ bool PLAN_CLASS_SPEC::check(
     if (have_cpu_vendor_regex && regexec(&(cpu_vendor_regex), sreq.host.p_vendor, 0, NULL, 0)) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: CPU vendor '%s' didn't match regexp\n",
-                sreq.host.p_vendor
+                                "[version] plan_class_spec: CPU vendor '%s' didn't match regexp\n",
+                                sreq.host.p_vendor
             );
         }
         return false;
@@ -426,8 +426,8 @@ bool PLAN_CLASS_SPEC::check(
     if (have_cpu_model_regex && regexec(&(cpu_model_regex), sreq.host.p_model, 0, NULL, 0)) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: CPU model '%s' didn't match regexp\n",
-                sreq.host.p_model
+                                "[version] plan_class_spec: CPU model '%s' didn't match regexp\n",
+                                sreq.host.p_model
             );
         }
         return false;
@@ -438,8 +438,8 @@ bool PLAN_CLASS_SPEC::check(
     if (min_core_client_version && sreq.core_client_version < min_core_client_version) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: Need newer BOINC core client: %d < %d\n",
-                sreq.core_client_version, min_core_client_version
+                                "[version] plan_class_spec: Need newer BOINC core client: %d < %d\n",
+                                sreq.core_client_version, min_core_client_version
             );
         }
         add_no_work_message("A newer BOINC may be required for some tasks.");
@@ -448,8 +448,8 @@ bool PLAN_CLASS_SPEC::check(
     if (max_core_client_version && sreq.core_client_version > max_core_client_version) {
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: Need older BOINC core client: %d > %d\n",
-                sreq.core_client_version, max_core_client_version
+                                "[version] plan_class_spec: Need older BOINC core client: %d > %d\n",
+                                sreq.core_client_version, max_core_client_version
             );
         }
         return false;
@@ -475,7 +475,7 @@ bool PLAN_CLASS_SPEC::check(
         if (n != 3) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: can't parse vbox version\n"
+                                    "[version] plan_class_spec: can't parse vbox version\n"
                 );
             }
             return false;
@@ -484,8 +484,8 @@ bool PLAN_CLASS_SPEC::check(
         if (min_vbox_version && v < min_vbox_version) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: vbox version too low: %d < %d\n",
-                    v, min_vbox_version
+                                    "[version] plan_class_spec: vbox version too low: %d < %d\n",
+                                    v, min_vbox_version
                 );
             }
             return false;
@@ -493,8 +493,8 @@ bool PLAN_CLASS_SPEC::check(
         if (max_vbox_version && v > max_vbox_version) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: vbox version too high: %d > %d\n",
-                    v, max_vbox_version
+                                    "[version] plan_class_spec: vbox version too high: %d > %d\n",
+                                    v, max_vbox_version
                 );
             }
             return false;
@@ -502,7 +502,7 @@ bool PLAN_CLASS_SPEC::check(
         if (in_vector(v, exclude_vbox_version)) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: vbox version %d excluded\n", v
+                                    "[version] plan_class_spec: vbox version %d excluded\n", v
                 );
             }
             return false;
@@ -511,10 +511,10 @@ bool PLAN_CLASS_SPEC::check(
         if (vm_accel_required) {
             if ((!strstr(sreq.host.p_features, "vmx") && !strstr(sreq.host.p_features, "svm"))
                 || sreq.host.p_vm_extensions_disabled
-            ) {
+                    ) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: missing VM HW acceleration\n"
+                                        "[version] plan_class_spec: missing VM HW acceleration\n"
                     );
                 }
                 return false;
@@ -526,7 +526,7 @@ bool PLAN_CLASS_SPEC::check(
         if (max_threads > 1) {
             if ((!strstr(sreq.host.p_features, "vmx") && !strstr(sreq.host.p_features, "svm"))
                 || sreq.host.p_vm_extensions_disabled
-            ) {
+                    ) {
                 can_use_multicore = false;
             }
         }
@@ -545,13 +545,13 @@ bool PLAN_CLASS_SPEC::check(
 
     if(docker){
         if (sreq.core_client_major_version < 8) {
-￼            add_no_work_message("BOINC client 8.0+ required for Docker jobs");
-￼            return false;
-￼        }
-￼        if (!(sreq.host.docker_use)) {
-￼            add_no_work_message("Docker is not available");
-￼            return false;
-￼        }
+            add_no_work_message("BOINC client 8.0+ required for Docker jobs");
+            return false;
+        }
+        if (!(sreq.host.docker_use)) {
+            add_no_work_message("Docker is not available");
+            return false;
+        }
     }
 
     // project-specific preference
@@ -564,15 +564,15 @@ bool PLAN_CLASS_SPEC::check(
         bool p = parse_str(buf, tag, value, sizeof(value));
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: parsed project prefs setting '%s' : %s\n",
-                project_prefs_tag, p?"true":"false"
+                                "[version] plan_class_spec: parsed project prefs setting '%s' : %s\n",
+                                project_prefs_tag, p?"true":"false"
             );
         }
         if (p ? regexec(&(project_prefs_regex), value, 0, NULL, 0) : !project_prefs_default_true) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: project prefs setting '%s' value='%s' prevents using plan class.\n",
-                    project_prefs_tag, p ? value : "(tag missing)"
+                                    "[version] plan_class_spec: project prefs setting '%s' value='%s' prevents using plan class.\n",
+                                    project_prefs_tag, p ? value : "(tag missing)"
                 );
             }
             return false;
@@ -594,8 +594,8 @@ bool PLAN_CLASS_SPEC::check(
         bool p = parse_double(buf, tag, v);
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: parsed project prefs setting '%s' : %s : %f\n",
-                gpu_utilization_tag, p?"true":"false", v
+                                "[version] plan_class_spec: parsed project prefs setting '%s' : %s : %f\n",
+                                gpu_utilization_tag, p?"true":"false", v
             );
         }
         if (v) {
@@ -612,7 +612,7 @@ bool PLAN_CLASS_SPEC::check(
         if (!cp.count) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: No AMD GPUs found\n"
+                                    "[version] plan_class_spec: No AMD GPUs found\n"
                 );
             }
             return false;
@@ -628,7 +628,7 @@ bool PLAN_CLASS_SPEC::check(
             if (!cp.atirt_detected) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: ATI libraries not found\n"
+                                        "[version] plan_class_spec: ATI libraries not found\n"
                     );
                 }
                 return false;
@@ -637,7 +637,7 @@ bool PLAN_CLASS_SPEC::check(
             if (need_amd_libs && !cp.amdrt_detected) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: AMD libraries not found\n"
+                                        "[version] plan_class_spec: AMD libraries not found\n"
                     );
                 }
                 return false;
@@ -648,7 +648,7 @@ bool PLAN_CLASS_SPEC::check(
             if (cp.have_opencl) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: OpenCL detected. Plan restricted to CAL only GPUs\n"
+                                        "[version] plan_class_spec: OpenCL detected. Plan restricted to CAL only GPUs\n"
                     );
                 }
                 return false;
@@ -659,8 +659,8 @@ bool PLAN_CLASS_SPEC::check(
         if (min_cal_target && cp.attribs.target < min_cal_target) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: CAL target less than minimum (%d < %d)\n",
-                    cp.attribs.target, min_cal_target
+                                    "[version] plan_class_spec: CAL target less than minimum (%d < %d)\n",
+                                    cp.attribs.target, min_cal_target
                 );
             }
             return false;
@@ -668,8 +668,8 @@ bool PLAN_CLASS_SPEC::check(
         if (max_cal_target && cp.attribs.target > max_cal_target) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: CAL target greater than maximum (%d > %d)\n",
-                    cp.attribs.target, max_cal_target
+                                    "[version] plan_class_spec: CAL target greater than maximum (%d > %d)\n",
+                                    cp.attribs.target, max_cal_target
                 );
             }
             return false;
@@ -687,8 +687,8 @@ bool PLAN_CLASS_SPEC::check(
             if (scanned != 3) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: driver version '%s' couldn't be parsed\n",
-                        cp.version
+                                        "[version] plan_class_spec: driver version '%s' couldn't be parsed\n",
+                                        cp.version
                     );
                 }
                 return false;
@@ -698,13 +698,13 @@ bool PLAN_CLASS_SPEC::check(
         } else {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: no CAL, driver version couldn't be determined\n"
+                                    "[version] plan_class_spec: no CAL, driver version couldn't be determined\n"
                 );
             }
         }
 
-    // NVIDIA
-    //
+        // NVIDIA
+        //
     } else if (!strcmp(gpu_type, "nvidia")) {
         COPROC_NVIDIA& cp = sreq.coprocs.nvidia;
         cpp = &cp;
@@ -712,7 +712,7 @@ bool PLAN_CLASS_SPEC::check(
         if (!cp.count) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: No NVIDIA GPUs found\n"
+                                    "[version] plan_class_spec: No NVIDIA GPUs found\n"
                 );
             }
             return false;
@@ -732,8 +732,8 @@ bool PLAN_CLASS_SPEC::check(
         if (min_nvidia_compcap && min_nvidia_compcap > v) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: NVIDIA compute capability required min: %d, supplied: %d\n",
-                    min_nvidia_compcap, v
+                                    "[version] plan_class_spec: NVIDIA compute capability required min: %d, supplied: %d\n",
+                                    min_nvidia_compcap, v
                 );
             }
             return false;
@@ -741,8 +741,8 @@ bool PLAN_CLASS_SPEC::check(
         if (max_nvidia_compcap && max_nvidia_compcap < v) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: CUDA compute capability required max: %d, supplied: %d\n",
-                    max_nvidia_compcap, v
+                                    "[version] plan_class_spec: CUDA compute capability required max: %d, supplied: %d\n",
+                                    max_nvidia_compcap, v
                 );
             }
             return false;
@@ -752,8 +752,8 @@ bool PLAN_CLASS_SPEC::check(
             if (min_cuda_version && min_cuda_version > cp.cuda_version) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: CUDA version required min: %d, supplied: %d\n",
-                        min_cuda_version, cp.cuda_version
+                                        "[version] plan_class_spec: CUDA version required min: %d, supplied: %d\n",
+                                        min_cuda_version, cp.cuda_version
                     );
                 }
                 return false;
@@ -761,8 +761,8 @@ bool PLAN_CLASS_SPEC::check(
             if (max_cuda_version && max_cuda_version < cp.cuda_version) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: CUDA version required max: %d, supplied: %d\n",
-                        max_cuda_version, cp.cuda_version
+                                        "[version] plan_class_spec: CUDA version required max: %d, supplied: %d\n",
+                                        max_cuda_version, cp.cuda_version
                     );
                 }
                 return false;
@@ -773,8 +773,8 @@ bool PLAN_CLASS_SPEC::check(
             log_messages.printf(MSG_NORMAL, "%s\n", msg.c_str());
         }
 
-    // Intel GPU
-    //
+        // Intel GPU
+        //
     } else if (strstr(gpu_type, "intel") == gpu_type) {
         COPROC& cp = sreq.coprocs.intel_gpu;
         cpp = &cp;
@@ -782,7 +782,7 @@ bool PLAN_CLASS_SPEC::check(
         if (!cp.count) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: No Intel GPUs found\n"
+                                    "[version] plan_class_spec: No Intel GPUs found\n"
                 );
             }
             return false;
@@ -794,7 +794,7 @@ bool PLAN_CLASS_SPEC::check(
             log_messages.printf(MSG_NORMAL, "%s\n", msg.c_str());
         }
 
-    // Apple GPU
+        // Apple GPU
 
     } else if (!strcmp(gpu_type, "apple_cpu")) {
         COPROC& cp = sreq.coprocs.apple_gpu;
@@ -803,7 +803,7 @@ bool PLAN_CLASS_SPEC::check(
         if (!cp.count) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: No Apple GPUs found\n"
+                                    "[version] plan_class_spec: No Apple GPUs found\n"
                 );
             }
             return false;
@@ -821,21 +821,21 @@ bool PLAN_CLASS_SPEC::check(
             }
         }
 
-    // custom GPU type
-    //
+        // custom GPU type
+        //
     } else if (strlen(gpu_type)) {
         cpp = sreq.coprocs.lookup_type(gpu_type);
         if (!cpp) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: No %s found\n", gpu_type
+                                    "[version] plan_class_spec: No %s found\n", gpu_type
                 );
             }
             return false;
         }
         if (config.debug_version_select) {
             log_messages.printf(MSG_NORMAL,
-                "[version] plan_class_spec: Custom coproc %s found\n", gpu_type
+                                "[version] plan_class_spec: Custom coproc %s found\n", gpu_type
             );
         }
         if (cpp->bad_gpu_peak_flops("Custom GPU", msg)) {
@@ -848,7 +848,7 @@ bool PLAN_CLASS_SPEC::check(
             if (!cpp->have_opencl) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] GPU doesn't support OpenCL\n"
+                                        "[version] GPU doesn't support OpenCL\n"
                     );
                 }
                 return false;
@@ -875,7 +875,7 @@ bool PLAN_CLASS_SPEC::check(
             if (!found) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] CPU doesn't support OpenCL\n"
+                                        "[version] CPU doesn't support OpenCL\n"
                     );
                 }
                 return false;
@@ -892,8 +892,8 @@ bool PLAN_CLASS_SPEC::check(
         if (min_gpu_ram_mb && min_gpu_ram_mb * MEGA > gpu_ram) {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: GPU RAM required min: %f, supplied: %f\n",
-                    min_gpu_ram_mb * MEGA, gpu_ram
+                                    "[version] plan_class_spec: GPU RAM required min: %f, supplied: %f\n",
+                                    min_gpu_ram_mb * MEGA, gpu_ram
                 );
             }
             return false;
@@ -905,8 +905,8 @@ bool PLAN_CLASS_SPEC::check(
             if (min_driver_version > driver_version) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: driver version required min: %d, supplied: %d\n",
-                        abs(min_driver_version), driver_version
+                                        "[version] plan_class_spec: driver version required min: %d, supplied: %d\n",
+                                        abs(min_driver_version), driver_version
                     );
                 }
                 return false;
@@ -916,8 +916,8 @@ bool PLAN_CLASS_SPEC::check(
             if (max_driver_version < driver_version) {
                 if (config.debug_version_select) {
                     log_messages.printf(MSG_NORMAL,
-                        "[version] plan_class_spec: driver version required max: %d, supplied: %d\n",
-                        abs(max_driver_version), driver_version
+                                        "[version] plan_class_spec: driver version required max: %d, supplied: %d\n",
+                                        abs(max_driver_version), driver_version
                     );
                 }
                 return false;
@@ -954,11 +954,11 @@ bool PLAN_CLASS_SPEC::check(
                 return false;
             }
             coproc_perf(
-                capped_host_fpops(),
-                gpu_peak_flops_scale * gpu_usage * cpp->peak_flops,
-                cpu_frac,
-                hu.projected_flops,
-                hu.avg_ncpus
+                    capped_host_fpops(),
+                    gpu_peak_flops_scale * gpu_usage * cpp->peak_flops,
+                    cpu_frac,
+                    hu.projected_flops,
+                    hu.avg_ncpus
             );
             hu.projected_flops *= projected_flops_scale;
             if (avg_ncpus) {
@@ -969,8 +969,8 @@ bool PLAN_CLASS_SPEC::check(
             // code in sched_customize.cpp
             //
             hu.peak_flops = gpu_peak_flops_scale*gpu_usage*cpp->peak_flops
-                + hu.avg_ncpus*capped_host_fpops()
-            ;
+                            + hu.avg_ncpus*capped_host_fpops()
+                    ;
         }
 
         if (!strcmp(gpu_type, "amd") || !strcmp(gpu_type, "ati")) {
@@ -988,8 +988,8 @@ bool PLAN_CLASS_SPEC::check(
         } else {
             if (config.debug_version_select) {
                 log_messages.printf(MSG_NORMAL,
-                    "[version] plan_class_spec: unknown GPU supplied: %s\n",
-                    gpu_type
+                                    "[version] plan_class_spec: unknown GPU supplied: %s\n",
+                                    gpu_type
                 );
             }
         }
@@ -1017,8 +1017,8 @@ bool PLAN_CLASS_SPEC::check(
                     if (mem_usage_seq > g_wreq->usable_ram) {
                         if (config.debug_version_select) {
                             log_messages.printf(MSG_NORMAL,
-                                "[version] plan_class_spec: insufficient multicore RAM; %f < %f",
-                                g_wreq->usable_ram, mem_usage_seq
+                                                "[version] plan_class_spec: insufficient multicore RAM; %f < %f",
+                                                g_wreq->usable_ram, mem_usage_seq
                             );
                         }
                         return false;
@@ -1070,8 +1070,8 @@ bool PLAN_CLASS_SPEC::check(
 }
 
 bool PLAN_CLASS_SPECS::check(
-    SCHEDULER_REQUEST& sreq, char* plan_class, HOST_USAGE& hu,
-    const WORKUNIT* wu
+        SCHEDULER_REQUEST& sreq, char* plan_class, HOST_USAGE& hu,
+        const WORKUNIT* wu
 ) {
     for (unsigned int i=0; i<classes.size(); i++) {
         if (!strcmp(classes[i].name, plan_class)) {
@@ -1083,7 +1083,7 @@ bool PLAN_CLASS_SPECS::check(
 }
 
 bool PLAN_CLASS_SPECS::wu_is_infeasible(
-    char* plan_class_name, const WORKUNIT* wu
+        char* plan_class_name, const WORKUNIT* wu
 ) {
     if(wu_restricted_plan_class) {
         for (unsigned int i=0; i<classes.size(); i++) {

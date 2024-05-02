@@ -140,7 +140,7 @@ int HOST_INFO::parse(XML_PARSER& xp, bool static_items_only) {
             continue;
         }
 #endif
-        if (xp.parse_str("docker_use", docker_use, sizeof(docker_use))) continue;
+        if (xp.parse_bool("docker_use", docker_use)) continue;
         if (xp.parse_str("product_name", product_name, sizeof(product_name))) continue;
         if (xp.parse_str("virtualbox_version", virtualbox_version, sizeof(virtualbox_version))) continue;
         if (xp.match_tag("coprocs")) {
@@ -232,7 +232,7 @@ int HOST_INFO::write(
 #ifdef _WIN64
         wsl_available ? 1 : 0
 #else
-        0
+        0,
 #endif
         docker_use ? 1 : 0);
 #ifdef _WIN64
