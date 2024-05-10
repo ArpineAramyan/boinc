@@ -225,16 +225,16 @@
 #define _xgetbv(x) __xgetbv(x)
 #else
 static unsigned long long _xgetbv(unsigned int index){
-      unsigned int A=0, D=0;
+    unsigned int A=0, D=0;
 
 #ifdef __GNUC__
-  #ifdef ASM_SUPPORTS_XGETBV
+    #ifdef ASM_SUPPORTS_XGETBV
       __asm__ __volatile__("xgetbv" : "=a"(A), "=d"(D) : "c"(index));
   #else
       __asm__ __volatile__(".byte 0x0f, 0x01, 0xd0": "=a"(A), "=d"(D) : "c"(index));
   #endif
 #elif defined(_MSC_VER)
-  #ifdef _M_IX86
+    #ifdef _M_IX86
       __asm {
                        mov ecx,index
                        __emit 00fh
@@ -249,7 +249,7 @@ static unsigned long long _xgetbv(unsigned int index){
       return asm_xgetbv(index);
   #endif
 #endif
-      return ((unsigned long long)D << 32) | A;
+    return ((unsigned long long)D << 32) | A;
 }
 #endif
 #endif
@@ -263,7 +263,7 @@ static unsigned long long _xgetbv(unsigned int index){
 #else
 static void __cpuid(unsigned int cpuinfo[4], unsigned int type)  {
 #ifdef __GNUC__
-  #ifdef ASM_SUPPORTS_CPUID
+    #ifdef ASM_SUPPORTS_CPUID
       __asm__ __volatile__("cpuid"
                             : "=a" (cpuinfo[0]), "=b" (cpuinfo[1]),
                               "=c" (cpuinfo[2]), "=d" (cpuinfo[3])
@@ -275,7 +275,7 @@ static void __cpuid(unsigned int cpuinfo[4], unsigned int type)  {
                             : "a" (type));
   #endif
 #elif defined(_MSC_VER)
-  #ifdef _M_IX86
+    #ifdef _M_IX86
       __asm {
                        mov eax,type
                        __emit 00fh
@@ -341,7 +341,7 @@ BOOL get_OSVERSIONINFO(OSVERSIONINFOEX& osvi) {
 }
 
 int get_os_information(
-    char* os_name, const int os_name_size, char* os_version, const int os_version_size
+        char* os_name, const int os_name_size, char* os_version, const int os_version_size
 ) {
     // This code snip-it was copied straight out of the MSDN Platform SDK
     //   Getting the System Version example and modified to dump the output
@@ -490,7 +490,7 @@ int get_os_information(
 
 
     snprintf( szVersion, sizeof(szVersion), ", (%.2u.%.2u.%.4u.%.2u)",
-        osvi.dwMajorVersion, osvi.dwMinorVersion, (osvi.dwBuildNumber & 0xFFFF), 0
+              osvi.dwMajorVersion, osvi.dwMinorVersion, (osvi.dwBuildNumber & 0xFFFF), 0
     );
 
 
@@ -671,7 +671,7 @@ int get_os_information(
                     }
                 }
 
-				// Test for the server type.
+                    // Test for the server type.
                 else if ( (osvi.wProductType == VER_NT_SERVER) || (osvi.wProductType == VER_NT_DOMAIN_CONTROLLER) ) {
 
                     // all NT6 or higher (Server 2008,2008r2,2012,2012r2,2015...)
@@ -929,7 +929,7 @@ int get_os_information(
                     case PROCESSOR_ARCHITECTURE_AMD64:
                         safe_strcat(szSKU, "x64 ");
                         break;
-                    // could be needed for Windows RT Boinc ?
+                        // could be needed for Windows RT Boinc ?
                     case PROCESSOR_ARCHITECTURE_ARM:
                         safe_strcat(szSKU, "ARM ");
                         break;
@@ -951,13 +951,13 @@ int get_os_information(
                 LONG lRet;
 
                 lRet = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                    "SYSTEM\\CurrentControlSet\\Control\\ProductOptions",
-                    0, KEY_QUERY_VALUE, &hKey );
+                                     "SYSTEM\\CurrentControlSet\\Control\\ProductOptions",
+                                     0, KEY_QUERY_VALUE, &hKey );
                 if( lRet != ERROR_SUCCESS )
                     return FALSE;
 
                 lRet = RegQueryValueEx( hKey, "ProductType", NULL, NULL,
-                    (LPBYTE) szProductType, &dwBufLen);
+                                        (LPBYTE) szProductType, &dwBufLen);
                 if( (lRet != ERROR_SUCCESS) || (dwBufLen > 80) )
                     return FALSE;
 
@@ -975,14 +975,14 @@ int get_os_information(
 
             // Display service pack (if any) and build number.
             if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, "Service Pack 6" ) == 0
-            ) {
+                    ) {
                 HKEY hKey;
                 LONG lRet;
 
                 // Test for SP6 versus SP6a.
                 lRet = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                    "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009",
-                    0, KEY_QUERY_VALUE, &hKey );
+                                     "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009",
+                                     0, KEY_QUERY_VALUE, &hKey );
 
                 if( lRet == ERROR_SUCCESS ) {
                     safe_strcpy( szServicePack, ", " );
@@ -1005,7 +1005,7 @@ int get_os_information(
 
             break;
 
-        // Test for the Windows 95 product family.
+            // Test for the Windows 95 product family.
         case VER_PLATFORM_WIN32_WINDOWS:
 
             if (osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 0) {
@@ -1039,14 +1039,14 @@ int get_cpuid(unsigned int info_type, unsigned int& a, unsigned int& b, unsigned
 #ifdef _MSC_VER
     __try {
 #endif
-        __cpuid(CPUInfo, info_type);
+    __cpuid(CPUInfo, info_type);
 
-        a = CPUInfo[0];
-        b = CPUInfo[1];
-        c = CPUInfo[2];
-        d = CPUInfo[3];
+    a = CPUInfo[0];
+    b = CPUInfo[1];
+    c = CPUInfo[2];
+    d = CPUInfo[3];
 
-        retval = 0;
+    retval = 0;
 #ifdef _MSC_VER
     }
     __except (EXCEPTION_EXECUTE_HANDLER) {}
@@ -1278,7 +1278,7 @@ int get_processor_features(char* vendor, char* features, int features_size) {
 #else
     unsigned int std_eax = 0, std_ebx = 0, std_ecx = 0, std_edx = 0;
     unsigned int ext_eax = 0, ext_ebx = 0, ext_ecx = 0, ext_edx = 0;
-	unsigned int struc_eax = 0, struc_ebx = 0, struc_ecx = 0, struc_edx = 0;
+    unsigned int struc_eax = 0, struc_ebx = 0, struc_ecx = 0, struc_edx = 0;
     unsigned int std_supported = 0, ext_supported = 0, struc_ext_supported = 0, intel_supported = 0, amd_supported = 0, hygon_supported = 0;
 
     if (strcmp(vendor, "GenuineIntel") == 0) {
@@ -1303,11 +1303,11 @@ int get_processor_features(char* vendor, char* features, int features_size) {
         get_cpuid(0x80000001, ext_eax, ext_ebx, ext_ecx, ext_edx);
     }
 
-	get_cpuid(0x00000000, struc_eax, struc_ebx, struc_ecx, struc_edx);
-	if (struc_eax >= 0x00000007) {
-		struc_ext_supported = 1;
-		get_cpuid(0x00000007, struc_eax, struc_ebx, struc_ecx, struc_edx);
-	}
+    get_cpuid(0x00000000, struc_eax, struc_ebx, struc_ecx, struc_edx);
+    if (struc_eax >= 0x00000007) {
+        struc_ext_supported = 1;
+        get_cpuid(0x00000007, struc_eax, struc_ebx, struc_ecx, struc_edx);
+    }
 
     FEATURE_TEST(std_supported, (std_edx & (1 << 0)), "fpu ");
     FEATURE_TEST(std_supported, (std_edx & (1 << 1)), "vme ");
@@ -1341,15 +1341,15 @@ int get_processor_features(char* vendor, char* features, int features_size) {
     FEATURE_TEST(std_supported, (std_ecx & (1 << 0)), "pni ");
     FEATURE_TEST(std_supported, (std_ecx & (1 << 1)), "pclmulqdq ");
     FEATURE_TEST(std_supported, (std_ecx & (1 << 9)), "ssse3 ");
-	FEATURE_TEST(std_supported, (std_ecx & (1 << 12)), "fma ");
-	FEATURE_TEST(std_supported, (std_ecx & (1 << 13)), "cx16 ");
+    FEATURE_TEST(std_supported, (std_ecx & (1 << 12)), "fma ");
+    FEATURE_TEST(std_supported, (std_ecx & (1 << 13)), "cx16 ");
     FEATURE_TEST(std_supported, (std_ecx & (1 << 19)), "sse4_1 ");
     FEATURE_TEST(std_supported, (std_ecx & (1 << 20)), "sse4_2 ");
     FEATURE_TEST(std_supported, (std_ecx & (1 << 22)), "movebe ");
     FEATURE_TEST(std_supported, (std_ecx & (1 << 23)), "popcnt ");
     FEATURE_TEST(std_supported, (std_ecx & (1 << 25)), "aes ");
-	FEATURE_TEST(std_supported, (std_ecx & (1 << 29)), "f16c ");
-	FEATURE_TEST(std_supported, (std_ecx & (1 << 30)), "rdrand");
+    FEATURE_TEST(std_supported, (std_ecx & (1 << 29)), "f16c ");
+    FEATURE_TEST(std_supported, (std_ecx & (1 << 30)), "rdrand");
 
     FEATURE_TEST(ext_supported, (ext_edx & (1 << 11)), "syscall ");
     FEATURE_TEST(ext_supported, (ext_edx & (1 << 20)), "nx ");
@@ -1360,25 +1360,25 @@ int get_processor_features(char* vendor, char* features, int features_size) {
     }
 
     if (is_avx_supported() && struc_ext_supported) {
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 5)), "avx2 ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 16)), "avx512f ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 17)), "avx512dq ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 19)), "adx ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 21)), "avx512ifma ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 26)), "avx512pf ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 27)), "avx512er ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 28)), "avx512cd ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 30)), "avx512bw ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 31)), "avx512vl ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 5)), "avx2 ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 16)), "avx512f ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 17)), "avx512dq ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 19)), "adx ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 21)), "avx512ifma ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 26)), "avx512pf ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 27)), "avx512er ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 28)), "avx512cd ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 30)), "avx512bw ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 31)), "avx512vl ");
 
-		FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 1)), "avx512vbmi ");
-		FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 6)), "avx512_vbmi2 ");
-		FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 8)), "gfni ");
-		FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 9)), "vaes ");
-		FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 10)), "vpclmulqdq ");
-		FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 11)), "avx512_vnni ");
-		FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 12)), "avx512_bitalg ");
-		FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 14)), "avx512_vpopcntdq ");
+        FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 1)), "avx512vbmi ");
+        FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 6)), "avx512_vbmi2 ");
+        FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 8)), "gfni ");
+        FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 9)), "vaes ");
+        FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 10)), "vpclmulqdq ");
+        FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 11)), "avx512_vnni ");
+        FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 12)), "avx512_bitalg ");
+        FEATURE_TEST(struc_ext_supported, (struc_ecx & (1 << 14)), "avx512_vpopcntdq ");
     }
 
     if (intel_supported) {
@@ -1402,10 +1402,10 @@ int get_processor_features(char* vendor, char* features, int features_size) {
         FEATURE_TEST(ext_supported, (ext_ecx & (1 << 13)), "wdt ");
         FEATURE_TEST(ext_supported, (ext_ecx & (1 << 15)), "lwp ");
         FEATURE_TEST(ext_supported, (ext_ecx & (1 << 16)), "fma4 ");
-		FEATURE_TEST(ext_supported, (ext_ecx & (1 << 17)), "tce ");
-		FEATURE_TEST(ext_supported, (ext_ecx & (1 << 18)), "cvt16 ");
-		FEATURE_TEST(ext_supported, (ext_ecx & (1 << 21)), "tbm ");
-		FEATURE_TEST(ext_supported, (ext_ecx & (1 << 22)), "topx ");
+        FEATURE_TEST(ext_supported, (ext_ecx & (1 << 17)), "tce ");
+        FEATURE_TEST(ext_supported, (ext_ecx & (1 << 18)), "cvt16 ");
+        FEATURE_TEST(ext_supported, (ext_ecx & (1 << 21)), "tbm ");
+        FEATURE_TEST(ext_supported, (ext_ecx & (1 << 22)), "topx ");
 
         FEATURE_TEST(ext_supported, (ext_edx & (1 << 26)), "page1gb ");
         FEATURE_TEST(ext_supported, (ext_edx & (1 << 27)), "rdtscp ");
@@ -1413,15 +1413,15 @@ int get_processor_features(char* vendor, char* features, int features_size) {
         FEATURE_TEST(ext_supported, (ext_edx & (1 << 31)), "3dnow ");
     }
 
-	if (struc_ext_supported) {
-		// Structured Ext. Feature Flags
-		// used by newer Intel and newer AMD CPUs
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 0)), "fsgsbase ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 3)), "bmi1 ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 4)), "hle ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 7)), "smep ");
-		FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 8)), "bmi2 ");
-	}
+    if (struc_ext_supported) {
+        // Structured Ext. Feature Flags
+        // used by newer Intel and newer AMD CPUs
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 0)), "fsgsbase ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 3)), "bmi1 ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 4)), "hle ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 7)), "smep ");
+        FEATURE_TEST(struc_ext_supported, (struc_ebx & (1 << 8)), "bmi2 ");
+    }
 #endif
 
     strip_whitespace(features);
@@ -1437,8 +1437,8 @@ typedef DWORD (WINAPI *GAPC)(WORD);
 #endif
 int get_processor_count(int& processor_count) {
     GAPC gapc = (GAPC) GetProcAddress(
-        GetModuleHandle(_T("kernel32.dll")),
-        "GetActiveProcessorCount"
+            GetModuleHandle(_T("kernel32.dll")),
+            "GetActiveProcessorCount"
     );
 
     if (gapc) {
@@ -1458,8 +1458,8 @@ int get_processor_count(int& processor_count) {
 //   the processor, use the Linux CPU processor feature descriptions.
 //
 int get_processor_info(
-    char* p_vendor, int p_vendor_size, char* p_model, int p_model_size,
-    char* p_features, int p_features_size, double& p_cache, int& p_ncpus
+        char* p_vendor, int p_vendor_size, char* p_model, int p_model_size,
+        char* p_features, int p_features_size, double& p_cache, int& p_ncpus
 ) {
     char vendor_name[256];
     get_processor_vendor(vendor_name, sizeof(vendor_name));
@@ -1478,8 +1478,8 @@ int get_processor_info(
     int family = 0, model = 0, stepping = 0;
     get_processor_version(family, model, stepping);
     snprintf(p_model, p_model_size,
-        "%s [Family %d Model %d Stepping %d]",
-        processor_name, family, model, stepping
+             "%s [Family %d Model %d Stepping %d]",
+             processor_name, family, model, stepping
     );
 #endif
 
@@ -1556,23 +1556,23 @@ int HOST_INFO::get_virtualbox_version() {
     safe_strcpy(virtualbox_version, "");
 
     lRet = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-        "SOFTWARE\\Oracle\\VirtualBox",
-        0, KEY_QUERY_VALUE, &hKey
+                         "SOFTWARE\\Oracle\\VirtualBox",
+                         0, KEY_QUERY_VALUE, &hKey
     );
     if (lRet == ERROR_SUCCESS) {
         lRet = RegQueryValueEx(hKey, "InstallDir", NULL, NULL,
-            (LPBYTE) szInstallDir, &dwInstallDir
+                               (LPBYTE) szInstallDir, &dwInstallDir
         );
         if((lRet != ERROR_SUCCESS) || (dwInstallDir > sizeof(szInstallDir))) {
             return 1;
         }
 
         lRet = RegQueryValueEx(
-            hKey, "VersionExt", NULL, NULL, (LPBYTE) szVersion, &dwVersion
+                hKey, "VersionExt", NULL, NULL, (LPBYTE) szVersion, &dwVersion
         );
         if((lRet != ERROR_SUCCESS) || (dwVersion > sizeof(szVersion))) {
             lRet = RegQueryValueEx(
-                hKey, "Version", NULL, NULL, (LPBYTE) szVersion, &dwVersion
+                    hKey, "Version", NULL, NULL, (LPBYTE) szVersion, &dwVersion
             );
             if((lRet != ERROR_SUCCESS) || (dwVersion > sizeof(szVersion))) {
                 return 1;
@@ -1591,42 +1591,32 @@ int HOST_INFO::get_virtualbox_version() {
 }
 
 bool HOST_INFO::is_docker_available(){
-    const char* docker_locations[10];
-    std::size_t path_count = 0;
     char cmd[300];
-    const char** paths;
-    FILE* fd;
-    fd = _popen("wsl which -a docker 2>&1", "r");
     char buf[256];
+    FILE* fd0;
+    FILE* fd1;
+    fd0 = _popen("wsl which -a docker 2>&1", "r");
 
-    if (fd) {
-        while (fgets(buf, sizeof(buf), fd)) {
-            std::cout << buf << std::endl;
+    if (fd0) {
+        while (fgets(buf, sizeof(buf), fd0)) {
             strip_whitespace(buf);
-            docker_locations[path_count] = buf;
-            ++path_count;
-        }
-    }
-
-    _pclose(fd);
-    docker_locations[path_count] = NULL;
-
-    for (paths = docker_locations; *paths != NULL; ++paths) {
-        const char* path = *paths;
-        safe_strcpy(cmd, "wsl ");
-        safe_strcat(cmd, path);
-        safe_strcat(cmd, " run --rm hello-world 2>&1");
-        fd = _popen(cmd, "r");
-        if (fd) {
-            while (fgets(buf, sizeof(buf), fd)) {
-                if (strstr(buf, "Hello from Docker!")) {
-                    _pclose(fd);
-                    return true;
+            safe_strcpy(cmd, "wsl ");
+            safe_strcat(cmd, buf);
+            safe_strcat(cmd, " run --rm hello-world 2>&1");
+            fd1 = _popen(cmd, "r");
+            if (fd1) {
+                while (fgets(buf, sizeof(buf), fd1)) {
+                    if (strstr(buf, "Hello from Docker!")) {
+                        _pclose(fd1);
+                        return true;
+                    }
                 }
+                _pclose(fd1);
             }
         }
-        _pclose(fd);
+        _pclose(fd0);
     }
+
     return false;
 }
 
@@ -1636,13 +1626,13 @@ static void show_proc_info(SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX &pi) {
     for (int i=0; i<pi.Group.ActiveGroupCount; i++) {
         PROCESSOR_GROUP_INFO &pgi = pi.Group.GroupInfo[i];
         msg_printf(NULL, MSG_INFO, "Windows processor group %d: %d processors",
-            i, pgi.ActiveProcessorCount
+                   i, pgi.ActiveProcessorCount
         );
     }
 }
 
 typedef BOOL (WINAPI *GLPI)(
-    LOGICAL_PROCESSOR_RELATIONSHIP, PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX, PDWORD
+LOGICAL_PROCESSOR_RELATIONSHIP, PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX, PDWORD
 );
 void HOST_INFO::win_get_processor_info() {
     n_processor_groups = 0;
@@ -1651,9 +1641,9 @@ void HOST_INFO::win_get_processor_info() {
     SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX buf[64];
     DWORD size = sizeof(buf);
     glpi(
-        RelationGroup,
-        buf,
-        &size
+            RelationGroup,
+            buf,
+            &size
     );
     char *p = (char*)buf;
     while (size > 0) {
@@ -1688,7 +1678,7 @@ int HOST_INFO::get_host_info(bool init) {
     int retval = get_filesystem_info(d_total, d_free);
     if (retval) {
         msg_printf(0, MSG_INTERNAL_ERROR,
-            "get_filesystem_info(): %s", boincerror(retval)
+                   "get_filesystem_info(): %s", boincerror(retval)
         );
     }
     get_local_network_info();
@@ -1696,7 +1686,7 @@ int HOST_INFO::get_host_info(bool init) {
     if (!init) return 0;
     ::get_memory_info(m_nbytes, m_swap);
     get_os_information(
-        os_name, sizeof(os_name), os_version, sizeof(os_version)
+            os_name, sizeof(os_name), os_version, sizeof(os_version)
     );
 #ifdef _WIN64
     if (!cc_config.dont_use_wsl) {
@@ -1723,11 +1713,11 @@ int HOST_INFO::get_host_info(bool init) {
         get_virtualbox_version();
     }
     get_processor_info(
-        p_vendor, sizeof(p_vendor),
-        p_model, sizeof(p_model),
-        p_features, sizeof(p_features),
-        m_cache,
-        p_ncpus
+            p_vendor, sizeof(p_vendor),
+            p_model, sizeof(p_model),
+            p_features, sizeof(p_features),
+            m_cache,
+            p_ncpus
     );
     collapse_whitespace(p_model);
     collapse_whitespace(p_vendor);

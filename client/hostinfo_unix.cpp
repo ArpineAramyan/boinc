@@ -182,11 +182,11 @@ extern "C" {
 #endif
 
 #if WASM
-    #include <emscripten.h>
+#include <emscripten.h>
 #endif
 
 #if WASM
-    EM_JS(FILE*, popen, (const char* command, const char* mode), {
+EM_JS(FILE*, popen, (const char* command, const char* mode), {
         //TODO: add javascript code
     });
 #endif
@@ -1197,10 +1197,10 @@ bool isDualGPUMacBook() {
 // see if Virtualbox is installed
 //
 const char* vbox_locations[] = {
-    "/usr/bin/VBoxManage",
-    "/usr/local/bin/VBoxManage",
-    // add other ifdefs here as necessary.
-    NULL
+        "/usr/bin/VBoxManage",
+        "/usr/local/bin/VBoxManage",
+        // add other ifdefs here as necessary.
+        NULL
 };
 
 int HOST_INFO::get_virtualbox_version() {
@@ -1236,43 +1236,30 @@ int HOST_INFO::get_virtualbox_version() {
 }
 
 bool HOST_INFO::is_docker_available() {
-    char docker_location[MAXPATHLEN];
-    const char* docker_locations[10];
-    std::size_t paths_count = 0;
-    const char** paths;
     char cmd [MAXPATHLEN+35];
     char buf[256];
-    FILE* fd;
-    fd = popen("which -a docker 2>&1", "r");
+    FILE* fd0;
+    FILE* fd1;
+    fd0 = popen("which -a docker 2>&1", "r");
 
-    if (fd){
-        while (fgets(buf, sizeof(buf), fd)) {
+    if (fd0){
+        while (fgets(buf, sizeof(buf), fd0)) {
             strip_whitespace(buf);
             if (access(buf, 1) != 0) continue;
-            safe_strcpy(docker_location, buf);
-            docker_locations[paths_count] = docker_location;
-            ++paths_count;
-        }
-    }
-
-    pclose(fd);
-    if (paths_count == 0) return false;
-    docker_locations[paths_count] = NULL;
-
-    for (paths = docker_locations; *paths != NULL; ++paths) {
-        const char* path = *paths;
-        safe_strcpy(cmd, path);
-        safe_strcat(cmd, " run --rm hello-world 2>&1");
-        fd = popen(cmd, "r");
-        if (fd) {
-            while (fgets(buf, sizeof(buf), fd)) {
-                if (strstr(buf, "Hello from Docker!")){
-                    pclose(fd);
-                    return true;
+            safe_strcpy(cmd, buf);
+            safe_strcat(cmd, " run --rm hello-world 2>&1");
+            fd1 = popen(cmd, "r");
+            if (fd1) {
+                while (fgets(buf, sizeof(buf), fd1)) {
+                    if (strstr(buf, "Hello from Docker!")) {
+                        pclose(fd1);
+                        return true;
+                    }
                 }
+                pclose(fd1);
             }
         }
-        pclose(fd);
+        pclose(fd0);
     }
 
     return false;
@@ -1340,7 +1327,7 @@ int HOST_INFO::get_cpu_info() {
 #endif
 
 #if defined(__FreeBSD__)
-#if defined(__i386__) || defined(__amd64__)
+    #if defined(__i386__) || defined(__amd64__)
     use_cpuid(*this);
 #endif
 #endif
@@ -1710,7 +1697,7 @@ int HOST_INFO::get_host_info(bool init) {
     int retval = get_filesystem_info(d_total, d_free);
     if (retval) {
         msg_printf(0, MSG_INTERNAL_ERROR,
-            "get_filesystem_info() failed: %s", boincerror(retval)
+                   "get_filesystem_info() failed: %s", boincerror(retval)
         );
     }
     get_local_network_info();
@@ -1765,7 +1752,7 @@ static const struct dir_tty_dev {
     }
 } tty_patterns[] = {
 #if defined(LINUX_LIKE_SYSTEM) and !defined(ANDROID)
-    { "/dev", "tty",
+        { "/dev", "tty",
       {"ttyS", "ttyACM"},
     },
     { "/dev", "pty", {}},
@@ -2177,7 +2164,7 @@ long HOST_INFO::user_idle_time(bool check_all_logins) {
 
 #if LINUX_LIKE_SYSTEM
 
-#if HAVE_XSS
+    #if HAVE_XSS
     idle_time = min(idle_time, xss_idle());
 #endif // HAVE_XSS
 
@@ -2186,10 +2173,10 @@ long HOST_INFO::user_idle_time(bool check_all_logins) {
     // on which systems (if any)
     //
     idle_time = min(idle_time, (long)device_idle_time("/dev/mouse"));
-        // solaris, linux
+    // solaris, linux
     idle_time = min(idle_time, (long)device_idle_time("/dev/input/mice"));
     idle_time = min(idle_time, (long)device_idle_time("/dev/kbd"));
-        // solaris
+    // solaris
 #endif // LINUX_LIKE_SYSTEM
     return idle_time;
 }
